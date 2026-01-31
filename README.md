@@ -105,28 +105,6 @@ Python
 
 The ML model is combined with keyword-based rules to improve real-world accuracy.
 
-PROJECT DIRECTORY STRUCTURE
-
-vgard
-│
-├── app.py (Flask backend)
-├── predictor.py (Fraud prediction logic)
-├── phone_checker.py (Phone number scam detection)
-├── stt_vosk.py (Offline speech-to-text)
-│
-├── fraud_numbers.txt (Blacklisted scam numbers)
-├── transcripts.log (Saved fraud evidence)
-│
-├── vectorizer.pkl (TF-IDF model)
-├── model.pkl (Trained ML model)
-│
-├── templates
-│ ├── home.html
-│ ├── audio.html
-│ ├── text.html
-│ └── logs.html
-│
-└── README.txt
 
 INSTALLATION STEPS
 
@@ -149,12 +127,7 @@ vosk-model-small-en-us
 
 Place it in the project root directory.
 
-RUNNING THE APPLICATION
 
-python app.py
-
-Open browser and go to:
-http://127.0.0.1:5000
 
 FRAUD LOGS AND EVIDENCE
 
@@ -173,17 +146,7 @@ Detected keywords
 
 Only one entry is saved per call session.
 
-PHONE NUMBER BLACKLIST
 
-Stored in file:
-fraud_numbers.txt
-
-You can manually add or remove numbers.
-Example format:
-
-+919876543210
-1800123456
-9999999999
 
 CONFIDENCE SCORING
 
@@ -221,29 +184,5 @@ Cyber Forensics
 
 AI & ML Labs
 
-LIMITATIONS
 
-Cannot intercept actual telecom calls
 
-Accuracy depends on dataset quality
-
-No live telecom provider database integration
-
-FUTURE ENHANCEMENTS
-
-Android mobile app
-
-Telecom API integration
-
-Deep learning models
-
-Multilingual support
-
-Cloud spam databases
-
-PROJECT DOMAIN
-
-Artificial Intelligence
-Natural Language Processing
-Speech Processing
-Cyber Security
