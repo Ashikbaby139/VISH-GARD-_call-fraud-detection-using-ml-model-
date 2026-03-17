@@ -2,126 +2,216 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Fraud Logs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VISH Guard | Fraud Logs</title>
 
 <style>
+:root {
+    --bg: #081120;
+    --bg-soft: rgba(9, 19, 35, 0.82);
+    --panel: rgba(10, 24, 44, 0.78);
+    --line: rgba(148, 163, 184, 0.16);
+    --text: #f8fafc;
+    --muted: #94a3b8;
+    --warn: #fb7185;
+    --shadow: 0 24px 60px rgba(2, 6, 23, 0.45);
+}
+
+* { box-sizing: border-box; }
+
 body {
-    margin:0;
-    min-height:100vh;
-    font-family:"Segoe UI",Tahoma,sans-serif;
-    background:linear-gradient(135deg,#1d2671,#c33764);
-    display:flex;
-    justify-content:center;
-    align-items:center;
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text);
+    background:
+        radial-gradient(circle at top left, rgba(56, 189, 248, 0.16), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(34, 197, 94, 0.16), transparent 24%),
+        linear-gradient(145deg, #040b16 0%, #081120 42%, #0e172a 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 28px 16px;
 }
 
-.card {
-    background:white;
-    width:820px;
-    padding:35px;
-    border-radius:16px;
-    box-shadow:0 15px 40px rgba(0,0,0,0.25);
+.shell {
+    width: min(1120px, 100%);
+    border: 1px solid var(--line);
+    border-radius: 28px;
+    background: var(--bg-soft);
+    backdrop-filter: blur(16px);
+    box-shadow: var(--shadow);
+    padding: 28px;
 }
 
-h2 {
-    text-align:center;
-    margin-bottom:20px;
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.eyebrow {
+    display: inline-flex;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(56, 189, 248, 0.22);
+    background: rgba(8, 145, 178, 0.12);
+    color: #bae6fd;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+h1 {
+    margin: 16px 0 8px;
+    font-size: clamp(2rem, 4vw, 3rem);
+    letter-spacing: -0.04em;
+}
+
+.lead {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.7;
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    border: 1px solid transparent;
+    border-radius: 16px;
+    padding: 12px 16px;
+    cursor: pointer;
+    color: var(--text);
+    font-weight: 700;
+    transition: transform 0.18s ease;
+}
+
+.btn:hover { transform: translateY(-2px); }
+
+.danger { background: linear-gradient(135deg, #ef4444, #f97316); }
+.secondary { background: transparent; border-color: rgba(148, 163, 184, 0.18); }
+
+.logs {
+    display: grid;
+    gap: 14px;
+    margin-top: 22px;
 }
 
 .log {
-    background:#f8f9fa;
-    padding:12px 15px;
-    border-radius:8px;
-    margin-bottom:10px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    border-left:5px solid #e74c3c;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 18px;
+    border-radius: 22px;
+    background: var(--panel);
+    border: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.log-time {
+    display: inline-flex;
+    margin-bottom: 10px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(251, 113, 133, 0.12);
+    color: #fecdd3;
+    font-size: 12px;
+    font-weight: 700;
 }
 
 .log-text {
-    font-family:Consolas, monospace;
-    font-size:14px;
-    color:#333;
-    white-space:pre-wrap;
+    color: var(--text);
+    line-height: 1.7;
+    white-space: pre-wrap;
+}
+
+.meta {
+    display: block;
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 13px;
 }
 
 .btn-del {
-    background:#e74c3c;
-    color:white;
-    border:none;
-    padding:6px 12px;
-    border-radius:6px;
-    cursor:pointer;
+    background: rgba(127, 29, 29, 0.22);
+    color: #fecdd3;
+    border: 1px solid rgba(251, 113, 133, 0.18);
+    border-radius: 14px;
+    padding: 11px 14px;
+    cursor: pointer;
+    white-space: nowrap;
 }
 
-.btn-del:hover {
-    background:#c0392b;
+.empty {
+    margin-top: 20px;
+    padding: 28px;
+    border-radius: 22px;
+    background: var(--panel);
+    border: 1px solid rgba(148, 163, 184, 0.12);
+    text-align: center;
+    color: var(--muted);
 }
 
-.controls {
-    display:flex;
-    justify-content:space-between;
-    margin-top:20px;
-}
+@media (max-width: 760px) {
+    .topbar,
+    .log {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 
-.clear {
-    background:#2c3e50;
-    color:white;
-    padding:10px 18px;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-}
-
-.back {
-    text-decoration:none;
-    color:#555;
-    font-size:14px;
+    .btn-del {
+        width: 100%;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<div class="card">
-    <h2>📜 Fraud Call Logs</h2>
+<main class="shell">
+    <div class="topbar">
+        <div>
+            <div class="eyebrow">Evidence Timeline</div>
+            <h1>Fraud detection logs</h1>
+            <p class="lead">Review saved scam detections, confidence levels, and detected keywords from previous sessions.</p>
+        </div>
+
+        <div class="actions">
+            <button class="btn danger" onclick="clearLogs()">Clear All Logs</button>
+            <button class="btn secondary" onclick="location.href='/'">Back Home</button>
+        </div>
+    </div>
 
     {% if logs %}
+    <div class="logs">
         {% for log in logs %}
         <div class="log">
-            <div class="log-text">
-                <strong>🕒 {{ log.time }}</strong><br>
-                {{ log.text }}<br>
-                <small>
-                    Confidence: {{ log.confidence }}% |
-                    Keywords: {{ log.keywords | join(", ") }}
-                </small>
+            <div class="log-content">
+                <span class="log-time">{{ log.time }}</span>
+                <div class="log-text">{{ log.text }}</div>
+                <small class="meta">Confidence: {{ log.confidence }}% | Keywords: {{ log.keywords | join(", ") }}</small>
             </div>
 
-            <button class="btn-del"
-                data-index="{{ loop.index0 }}"
-                onclick="deleteLog(this)">
+            <button class="btn-del" data-index="{{ loop.index0 }}" onclick="deleteLog(this)">
                 Delete Evidence
             </button>
         </div>
         {% endfor %}
-    {% else %}
-        <p style="text-align:center;color:#777;">
-            No fraud logs found.
-        </p>
-    {% endif %}
-
-    <div class="controls">
-        <button class="clear" onclick="clearLogs()">🗑️ Clear All</button>
-        
-         <button class="back" onclick="location.href='/'">
-         back 
     </div>
-</div>
+    {% else %}
+    <div class="empty">No fraud logs found.</div>
+    {% endif %}
+</main>
 
 <script>
-async function deleteLog(btn){
+async function deleteLog(btn) {
     const index = btn.getAttribute("data-index");
 
     await fetch("/delete_log", {
@@ -133,8 +223,8 @@ async function deleteLog(btn){
     location.reload();
 }
 
-async function clearLogs(){
-    if(!confirm("Clear all logs?")) return;
+async function clearLogs() {
+    if (!confirm("Clear all logs?")) return;
 
     await fetch("/clear_logs", { method: "POST" });
     location.reload();

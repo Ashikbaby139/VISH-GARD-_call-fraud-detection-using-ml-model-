@@ -1,21 +1,58 @@
+import os
 import pickle
 import string
+from functools import lru_cache
+
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "model.pkl")
+VECTORIZER_PATH = os.path.join(BASE_DIR, "vectorizer.pkl")
+
+_tfidf = None
+_model = None
+_stopwords = None
+_fraud_keywords = None
+_normalized_fraud_keywords = None
+_punctuation_table = str.maketrans("", "", string.punctuation)
+
+
+def _load_artifacts():
+    global _tfidf, _model
+
+    if _tfidf is None:
+        with open(VECTORIZER_PATH, "rb") as f:
+            _tfidf = pickle.load(f)
+
+    if _model is None:
+        with open(MODEL_PATH, "rb") as f:
+            _model = pickle.load(f)
+
+
 from nltk.corpus import stopwords
-import os
+import nltk
 
-# ---------- Load trained artifacts ----------
-with open("vectorizer.pkl", "rb") as f:
-    tfidf = pickle.load(f)
+_stopwords = None
 
-with open("model.pkl", "rb") as f:
-    model = pickle.load(f)
+def _load_stopwords():
+    global _stopwords
 
-STOPWORDS = set(stopwords.words("english"))
+    if _stopwords is None:
+        try:
+            _stopwords = set(stopwords.words("english"))
+        except LookupError:
+            nltk.download("stopwords")
+            _stopwords = set(stopwords.words("english"))
 
-# ---------- Load Fraud Keywords from File ----------
+    return _stopwords
+
 def load_keywords(file_name="fraud_keywords.txt"):
+    global _fraud_keywords, _normalized_fraud_keywords
+
+    if _fraud_keywords is not None:
+        return _fraud_keywords
+
     keywords = []
-    file_path = os.path.join(os.path.dirname(__file__), file_name)
+    file_path = os.path.join(BASE_DIR, file_name)
 
     with open(file_path, "r", encoding="utf-8") as f:
         for line in f:
@@ -23,50 +60,52 @@ def load_keywords(file_name="fraud_keywords.txt"):
             if kw:
                 keywords.append(kw)
 
-    return keywords
+    _fraud_keywords = tuple(keywords)
+    _normalized_fraud_keywords = tuple((kw, kw.replace(" ", "")) for kw in _fraud_keywords)
+    return _fraud_keywords
 
-FRAUD_KEYWORDS = load_keywords()
 
-# ---------- Text Preprocessing ----------
 def preprocess(text):
     if not isinstance(text, str):
         return ""
-    text = "".join(c for c in text if c not in string.punctuation)
-    words = [w for w in text.split() if w.lower() not in STOPWORDS]
+
+    stopwords = _load_stopwords()
+    cleaned = text.translate(_punctuation_table)
+    words = [w for w in cleaned.split() if w.lower() not in stopwords]
     return " ".join(words)
 
-# ---------- ROBUST Keyword Detection ----------
+
 def keyword_score(text):
-    text_norm = text.lower().replace(" ", "")
+    load_keywords()
+    text_norm = "".join(str(text).lower().split())
     found = []
 
-    for kw in FRAUD_KEYWORDS:
-        kw_norm = kw.replace(" ", "")
+    for kw, kw_norm in _normalized_fraud_keywords:
         if kw_norm in text_norm:
             found.append(kw)
 
     return len(found), found
 
-# ---------- FINAL HYBRID PREDICTION ----------
-def predict_fraud_hybrid(text):
-    X = tfidf.transform([preprocess(text)])
-    proba = model.predict_proba(X)[0]   # [fraud, normal]
+
+@lru_cache(maxsize=512)
+def _predict_fraud_hybrid_cached(text):
+    _load_artifacts()
+
+    X = _tfidf.transform([preprocess(text)])
+    proba = _model.predict_proba(X)[0]
     ml_confidence = proba[0] * 100
 
     kw_count, found_keywords = keyword_score(text)
 
-    # 🚨 Force fraud if OTP detected (real-world rule)
     if "otp" in found_keywords:
         return 0, 100.0, found_keywords
 
-    # Strong keyword boosting
-    final_confidence = ml_confidence + (kw_count * 20)
-    final_confidence = min(final_confidence, 100)
-
-    # Lower threshold for voice fraud
-    if final_confidence >= 40:
-        decision = 0   # Fraud
-    else:
-        decision = 1   # Safe
+    final_confidence = min(ml_confidence + (kw_count * 20), 100)
+    decision = 0 if final_confidence >= 40 else 1
 
     return decision, round(final_confidence, 2), found_keywords
+
+
+def predict_fraud_hybrid(text):
+    safe_text = text if isinstance(text, str) else ""
+    return _predict_fraud_hybrid_cached(safe_text)

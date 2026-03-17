@@ -2,133 +2,218 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Text Scam Detection</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VISH Guard | Text Detection</title>
 
 <style>
+:root {
+    --bg: #081120;
+    --bg-soft: rgba(9, 19, 35, 0.82);
+    --panel: rgba(10, 24, 44, 0.78);
+    --line: rgba(148, 163, 184, 0.16);
+    --text: #f8fafc;
+    --muted: #94a3b8;
+    --shadow: 0 24px 60px rgba(2, 6, 23, 0.45);
+}
+
+* { box-sizing: border-box; }
+
 body {
-    margin:0;
-    height:100vh;
-    font-family:"Segoe UI",Tahoma,sans-serif;
-    background: linear-gradient(135deg, #1d2671, #c33764);
-    display:flex;
-    justify-content:center;
-    align-items:center;
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text);
+    background:
+        radial-gradient(circle at top left, rgba(56, 189, 248, 0.16), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(34, 197, 94, 0.16), transparent 24%),
+        linear-gradient(145deg, #040b16 0%, #081120 42%, #0e172a 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 28px 16px;
 }
 
-.card {
-    background:white;
-    width:600px;
-    padding:40px;
-    border-radius:16px;
-    box-shadow:0 15px 40px rgba(0,0,0,0.25);
-    animation:fadeIn 0.8s ease;
+.shell {
+    width: min(1100px, 100%);
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 22px;
 }
 
-@keyframes fadeIn {
-    from {opacity:0; transform:translateY(20px);}
-    to {opacity:1; transform:translateY(0);}
+.hero, .panel {
+    border: 1px solid var(--line);
+    border-radius: 28px;
+    background: var(--bg-soft);
+    backdrop-filter: blur(16px);
+    box-shadow: var(--shadow);
 }
 
-h2{text-align:center;}
-p.subtitle{text-align:center;color:#666;}
+.hero { padding: 32px; }
+.panel { padding: 24px; background: var(--panel); }
+
+.eyebrow {
+    display: inline-flex;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(56, 189, 248, 0.22);
+    background: rgba(8, 145, 178, 0.12);
+    color: #bae6fd;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+h1 {
+    margin: 18px 0 10px;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1.02;
+    letter-spacing: -0.04em;
+}
+
+.lead, .panel p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+.composer,
+.section-card {
+    margin-top: 22px;
+    padding: 18px;
+    border-radius: 22px;
+    background: rgba(15, 23, 42, 0.58);
+    border: 1px solid rgba(148, 163, 184, 0.12);
+}
 
 textarea {
-    width:100%;
-    height:120px;
-    margin-top:20px;
-    padding:12px;
-    border-radius:8px;
-    border:1px solid #ccc;
-    font-size:14px;
+    width: 100%;
+    min-height: 220px;
+    margin-top: 12px;
+    padding: 16px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    background: rgba(7, 17, 32, 0.78);
+    color: var(--text);
+    resize: vertical;
+    font-size: 15px;
+    line-height: 1.6;
 }
 
-button {
-    width:100%;
-    padding:14px;
-    margin-top:20px;
-    font-size:16px;
-    border:none;
-    border-radius:10px;
-    color:white;
-    cursor:pointer;
-    background:linear-gradient(135deg,#11998e,#38ef7d);
+textarea::placeholder {
+    color: #64748b;
 }
 
-button:hover {
-    transform:translateY(-2px);
-    box-shadow:0 8px 20px rgba(0,0,0,0.2);
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 16px;
 }
 
-.section {
-    margin-top:20px;
+.btn {
+    border: 1px solid transparent;
+    border-radius: 16px;
+    padding: 14px 18px;
+    color: var(--text);
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 700;
+    transition: transform 0.18s ease;
 }
 
-.label { font-weight:600; }
+.btn:hover { transform: translateY(-2px); }
+
+.primary { background: linear-gradient(135deg, #0ea5e9, #2563eb); }
+.secondary { background: transparent; border-color: rgba(148, 163, 184, 0.18); }
+
+.section-card h3 {
+    margin: 0 0 10px;
+    font-size: 1rem;
+}
+
 .box {
-    background:#f4f6f8;
-    padding:12px;
-    border-radius:8px;
-    min-height:30px;
+    padding: 14px;
+    border-radius: 16px;
+    background: rgba(7, 17, 32, 0.78);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    min-height: 56px;
 }
 
-.back {
-    text-align:center;
-    margin-top:25px;
+.stack {
+    display: grid;
+    gap: 14px;
+    margin-top: 18px;
 }
-.back a {
-    text-decoration:none;
-    color:#555;
-    font-size:14px;
+
+@media (max-width: 920px) {
+    .shell { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+    body { padding: 16px; }
+    .hero, .panel { padding: 22px; border-radius: 22px; }
+    .actions { flex-direction: column; }
+    .btn { width: 100%; }
 }
 </style>
 </head>
 
 <body>
+<main class="shell">
+    <section class="hero">
+        <div class="eyebrow">Text Analysis</div>
+        <h1>Analyze suspicious text with the same fraud detection workflow.</h1>
+        <p class="lead">Paste a message, call transcript, or suspicious content and run the existing classifier with keyword detection.</p>
 
-<div class="card">
-    <h2>✍️ Text Scam Detection</h2>
-    <p class="subtitle">Analyze call sentences or messages</p>
+        <div class="composer">
+            <h3>Input</h3>
+            <textarea id="input" placeholder="Paste or type suspicious call text..."></textarea>
+            <div class="actions">
+                <button class="btn primary" onclick="analyze()">Analyze Text</button>
+                <button class="btn secondary" onclick="location.href='/'">Back Home</button>
+            </div>
+        </div>
+    </section>
 
-    <textarea id="input" placeholder="Paste or type suspicious call text..."></textarea>
+    <aside class="panel">
+        <h2>Detection Output</h2>
+        <p>Review the current classification, confidence score, and detected keywords from the exact text you submit.</p>
 
-    <button onclick="analyze()">Analyze Text</button>
+        <div class="stack">
+            <div class="section-card">
+                <h3>Result</h3>
+                <div class="box" id="result">-</div>
+            </div>
 
-    <div class="section">
-        <div class="label">Result</div>
-        <div class="box" id="result"></div>
-    </div>
+            <div class="section-card">
+                <h3>Confidence</h3>
+                <div class="box" id="confidence">-</div>
+            </div>
 
-    <div class="section">
-        <div class="label">Confidence</div>
-        <div class="box" id="confidence"></div>
-    </div>
-
-    <div class="section">
-        <div class="label">Detected Keywords</div>
-        <div class="box" id="keywords"></div>
-    </div>
-
-    <div class="back">
-        <button class="back" onclick="location.href='/'">
-         back
-    </div>
-</div>
+            <div class="section-card">
+                <h3>Detected Keywords</h3>
+                <div class="box" id="keywords">None</div>
+            </div>
+        </div>
+    </aside>
+</main>
 
 <script>
-async function analyze(){
-    const text=document.getElementById("input").value;
+async function analyze() {
+    const text = document.getElementById("input").value;
 
-    const res=await fetch("/analyze_text",{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({text})
+    const res = await fetch("/analyze_text", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text })
     });
 
-    const data=await res.json();
-    document.getElementById("result").innerText=data.result;
-    document.getElementById("confidence").innerText=data.confidence;
-    document.getElementById("keywords").innerText=
-        data.keywords.length ? data.keywords.join(", ") : "None";
+    const data = await res.json();
+    document.getElementById("result").innerText = data.result || "-";
+    document.getElementById("confidence").innerText = data.confidence || "-";
+    document.getElementById("keywords").innerText = data.keywords && data.keywords.length ? data.keywords.join(", ") : "None";
 }
 </script>
 

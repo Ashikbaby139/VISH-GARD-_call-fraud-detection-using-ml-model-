@@ -2,119 +2,1659 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>VOICE GARD</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VISH Guard</title>
     <style>
+        :root {
+            --bg: #081120;
+            --bg-soft: rgba(9, 19, 35, 0.82);
+            --panel: rgba(10, 24, 44, 0.76);
+            --panel-strong: rgba(14, 32, 57, 0.94);
+            --line: rgba(148, 163, 184, 0.16);
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --accent: #22c55e;
+            --accent-2: #38bdf8;
+            --danger: #fb7185;
+            --shadow: 0 24px 60px rgba(2, 6, 23, 0.45);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
-            height: 100vh;
-            font-family: "Segoe UI", Tahoma, sans-serif;
-            background: linear-gradient(135deg, #1d2671, #c33764);
+            min-height: 100vh;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(56, 189, 248, 0.16), transparent 28%),
+                radial-gradient(circle at bottom right, rgba(34, 197, 94, 0.18), transparent 24%),
+                linear-gradient(145deg, #040b16 0%, #081120 42%, #0e172a 100%);
             display: flex;
             justify-content: center;
+            align-items: flex-start;
+            padding: 32px 18px 32px 88px;
+        }
+
+        .page-stack {
+            width: min(1120px, 100%);
+            display: grid;
+            gap: 24px;
+        }
+
+        .shell {
+            width: 100%;
+            display: block;
+        }
+
+        .hero,
+        .panel {
+            border: 1px solid var(--line);
+            border-radius: 28px;
+            background: var(--bg-soft);
+            backdrop-filter: blur(16px);
+            box-shadow: var(--shadow);
+        }
+
+        .topbar {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: start;
+            margin-bottom: 20px;
+        }
+
+        .topbar-spacer {
+            min-width: 0;
+        }
+
+        .topbar-link {
+            display: inline-flex;
             align-items: center;
-            color: #333;
+            gap: 10px;
+            padding: 12px 16px;
+            border-radius: 999px;
+            border: 1px solid rgba(251, 113, 133, 0.2);
+            background: rgba(127, 29, 29, 0.22);
+            color: #ffe4e6;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            transition: background 0.14s ease, border-color 0.14s ease;
+            justify-self: end;
         }
 
-        .card {
-            background: #ffffff;
-            width: 420px;
-            padding: 45px 40px;
-            border-radius: 16px;
-            text-align: center;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
-            animation: fadeIn 0.8s ease-in-out;
+        .topbar-link:hover,
+        .topbar-link:focus-visible {
+            background: rgba(190, 24, 93, 0.22);
+            border-color: rgba(251, 113, 133, 0.34);
+            outline: none;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .hero {
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .icon {
-            font-size: 48px;
+        .hero::before {
+            content: "";
+            position: absolute;
+            inset: auto -80px -120px auto;
+            width: 260px;
+            height: 260px;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.32), transparent 68%);
+            pointer-events: none;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            border: 1px solid rgba(56, 189, 248, 0.22);
+            background: rgba(8, 145, 178, 0.12);
+            color: #bae6fd;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .brand {
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            margin-bottom: 18px;
+        }
+
+        .brand-mark {
+            width: 300px;
+            height: 300px;
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .brand-mark img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            display: block;
+        }
+
+        .brand-copy {
+            min-width: 0;
+            text-align: left;
+        }
+
+        .brand-copy strong {
+            display: block;
+            font-size: 1.9rem;
+            letter-spacing: -0.03em;
+        }
+
+        .brand-copy span {
+            display: block;
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: 17px;
+        }
+
+        .monitor {
+            margin-top: 24px;
+            padding: 22px;
+            border-radius: 26px;
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            background: rgba(7, 17, 32, 0.72);
+        }
+
+        .monitor-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .monitor-copy h1 {
+            margin: 0 0 10px;
+            font-size: clamp(1.45rem, 3.5vw, 2.6rem);
+            line-height: 1.04;
+            letter-spacing: -0.04em;
+        }
+
+        .monitor-copy p {
+            margin: 0;
+            max-width: 520px;
+            color: var(--muted);
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 999px;
+            border: 1px solid rgba(251, 113, 133, 0.18);
+            background: rgba(127, 29, 29, 0.18);
+            white-space: nowrap;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            background: #fb7185;
+            box-shadow: 0 0 0 6px rgba(251, 113, 133, 0.12);
+        }
+
+        .status-badge strong {
+            display: block;
+            font-size: 13px;
+        }
+
+        .status-badge span {
+            display: block;
+            margin-top: 2px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .graph-shell {
+            padding: 16px 16px 12px;
+            border-radius: 22px;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            background:
+                linear-gradient(180deg, rgba(15, 23, 42, 0.86), rgba(7, 17, 32, 0.94));
+        }
+
+        .graph-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
             margin-bottom: 10px;
         }
 
-        h2 {
-            margin: 10px 0;
-            font-size: 26px;
-            color: #222;
+        .graph-meta strong {
+            font-size: 14px;
+            letter-spacing: 0.02em;
         }
 
-        p {
-            font-size: 15px;
-            color: #666;
-            margin-bottom: 30px;
+        .graph-meta span {
+            color: var(--muted);
+            font-size: 12px;
         }
 
-        .btn {
+        .graph {
             width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .graph-grid line {
+            stroke: rgba(148, 163, 184, 0.12);
+            stroke-width: 1;
+        }
+
+        .graph-axis text {
+            fill: #64748b;
+            font-size: 11px;
+        }
+
+        .graph-bars rect {
+            fill: url(#riskBarGradient);
+            opacity: 0.95;
+        }
+
+        .graph-bars rect.safe {
+            fill: rgba(56, 189, 248, 0.4);
+        }
+
+        .graph-topline {
+            fill: none;
+            stroke: #fde68a;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .graph-dot {
+            fill: #fde68a;
+            stroke: rgba(15, 23, 42, 0.95);
+            stroke-width: 2;
+        }
+
+        .signal {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .signal-card {
+            padding: 14px;
+            border-radius: 18px;
+            background: rgba(15, 23, 42, 0.72);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .signal-card label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--muted);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .signal-value {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .signal-value strong {
+            font-size: 1.25rem;
+        }
+
+        .signal-value span {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .meter {
+            height: 8px;
+            border-radius: 999px;
+            background: rgba(148, 163, 184, 0.14);
+            overflow: hidden;
+        }
+
+        .meter-fill {
+            height: 100%;
+            width: 0;
+            border-radius: inherit;
+            transition: width 0.6s ease;
+        }
+
+        .meter-fill.risk {
+            background: linear-gradient(90deg, #fb7185, #ef4444);
+        }
+
+        .meter-fill.spam {
+            background: linear-gradient(90deg, #f59e0b, #fb7185);
+        }
+
+        .meter-fill.safe {
+            background: linear-gradient(90deg, #38bdf8, #22c55e);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+            margin-top: 30px;
+        }
+
+        .stat {
+            padding: 18px;
+            border-radius: 20px;
+            background: rgba(15, 23, 42, 0.55);
+            border: 1px solid rgba(148, 163, 184, 0.12);
+        }
+
+        .stat strong {
+            display: block;
+            font-size: 1.5rem;
+            margin-bottom: 6px;
+        }
+
+        .stat span {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .panel {
+            padding: 22px;
+            background: var(--panel);
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: none;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 18px;
+            left: 0;
+            bottom: 18px;
+            width: 320px;
+            min-height: auto;
+            z-index: 20;
+            border-radius: 30px;
+            background: rgba(8, 18, 34, 0.98);
+            transform: translate3d(calc(-100% + 54px), 0, 0);
+            transition: transform 0.11s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.1s ease-out;
+            overflow-x: hidden;
+            overflow-y: auto;
+            box-shadow: 0 12px 24px rgba(2, 6, 23, 0.28);
+            scrollbar-width: thin;
+            scrollbar-color: rgba(56, 189, 248, 0.38) rgba(15, 23, 42, 0.3);
+            will-change: transform;
+            contain: layout paint;
+        }
+
+        .sidebar:hover,
+        .sidebar:focus-within {
+            transform: translate3d(0, 0, 0);
+            box-shadow: 0 14px 26px rgba(2, 6, 23, 0.3);
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.28);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            border-radius: 999px;
+            background: rgba(56, 189, 248, 0.38);
+        }
+
+        .sidebar::before {
+            content: "Menu";
+            position: absolute;
+            top: 26px;
+            right: 10px;
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            padding: 12px 8px;
+            border-radius: 999px;
+            background: rgba(56, 189, 248, 0.14);
+            border: 1px solid rgba(56, 189, 248, 0.18);
+            color: #bae6fd;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            pointer-events: none;
+        }
+
+        .sidebar-header {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 22px;
+            padding-right: 30px;
+        }
+
+        .sidebar-header h2 {
+            margin: 0;
+            font-size: 1.35rem;
+        }
+
+        .sidebar-header p {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .console-badge {
+            padding: 8px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            background: rgba(20, 83, 45, 0.24);
+            color: #bbf7d0;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .sidebar-group {
+            margin-bottom: 18px;
             padding: 16px;
-            margin: 12px 0;
-            font-size: 18px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            color: white;
+            border-radius: 20px;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            background: rgba(7, 17, 32, 0.54);
+        }
+
+        .sidebar-group-title {
             display: flex;
             align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .sidebar-group-title strong {
+            font-size: 13px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .sidebar-group-title span {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .sidebar-nav {
+            display: grid;
+            gap: 14px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            width: 100%;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 20px;
+            padding: 16px;
+            background: var(--panel-strong);
+            color: var(--text);
+            text-decoration: none;
+            transition: border-color 0.16s ease, background 0.16s ease;
+        }
+
+        .nav-link:hover,
+        .nav-link:focus-visible {
+            border-color: rgba(56, 189, 248, 0.28);
+            background: rgba(16, 36, 61, 0.98);
+            outline: none;
+        }
+
+        .nav-link.active {
+            border-color: rgba(56, 189, 248, 0.44);
+            background: rgba(11, 31, 53, 0.98);
+        }
+
+        .nav-link-button {
+            font: inherit;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .nav-link-main {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .nav-link-copy {
+            display: grid;
+            gap: 4px;
+            min-width: 0;
+        }
+
+        .nav-link-copy strong {
+            font-size: 0.98rem;
+        }
+
+        .nav-link-copy span {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.45;
+        }
+
+        .icon {
+            display: inline-flex;
+            align-items: center;
             justify-content: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            font-size: 18px;
+            background: rgba(56, 189, 248, 0.14);
+            color: #bae6fd;
+        }
+
+        .sidebar-notes {
+            display: grid;
             gap: 10px;
-            transition: transform 0.2s, box-shadow 0.2s;
         }
 
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        .sidebar-note {
+            padding: 12px 14px;
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.08);
+            background: rgba(15, 23, 42, 0.54);
         }
 
-        .audio {
-            background: linear-gradient(135deg, #0072ff, #00c6ff);
+        .sidebar-note strong {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 13px;
         }
 
-        .text {
-            background: linear-gradient(135deg,#0072ff, #00c6ff);
+        .sidebar-note span {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .tag {
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .tag.live {
+            background: rgba(34, 197, 94, 0.14);
+            color: #86efac;
+        }
+
+        .tag.fast {
+            background: rgba(56, 189, 248, 0.14);
+            color: #7dd3fc;
+        }
+
+        .tag.alert {
+            background: rgba(251, 113, 133, 0.12);
+            color: #fda4af;
         }
 
         .footer {
-            margin-top: 25px;
+            margin-top: auto;
+            padding-top: 18px;
+            padding-right: 18px;
+            border-top: 1px solid rgba(148, 163, 184, 0.12);
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .history-panel {
+            margin-top: 18px;
+            padding: 18px;
+            border-radius: 22px;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            background: rgba(7, 17, 32, 0.72);
+        }
+
+        .history-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .history-head strong {
+            font-size: 14px;
+            letter-spacing: 0.02em;
+        }
+
+        .history-head span {
+            color: var(--muted);
             font-size: 12px;
-            color: #aaa;
+        }
+
+        .history-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .history-item {
+            padding: 14px;
+            border-radius: 18px;
+            border: 1px solid rgba(148, 163, 184, 0.08);
+            background: rgba(15, 23, 42, 0.68);
+        }
+
+        .history-item-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .history-item strong {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .history-meta {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .history-chip {
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .history-chip.fraud {
+            color: #fecdd3;
+            background: rgba(127, 29, 29, 0.3);
+            border: 1px solid rgba(251, 113, 133, 0.18);
+        }
+
+        .history-chip.safe {
+            color: #bbf7d0;
+            background: rgba(20, 83, 45, 0.28);
+            border: 1px solid rgba(34, 197, 94, 0.18);
+        }
+
+        .history-body {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .history-keywords {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .history-keywords span {
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(56, 189, 248, 0.12);
+            border: 1px solid rgba(56, 189, 248, 0.18);
+            color: #bae6fd;
+            font-size: 11px;
+        }
+
+        .history-empty {
+            padding: 18px;
+            border-radius: 18px;
+            border: 1px dashed rgba(148, 163, 184, 0.16);
+            color: var(--muted);
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .detail-graph-panel {
+            margin-top: 18px;
+            padding: 22px;
+            border-radius: 28px;
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            background: var(--bg-soft);
+            backdrop-filter: blur(16px);
+            box-shadow: var(--shadow);
+        }
+
+        .detail-graph-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .detail-graph-head strong {
+            display: block;
+            font-size: 1.15rem;
+            margin-bottom: 6px;
+        }
+
+        .detail-graph-head p,
+        .detail-graph-head span {
+            margin: 0;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .detail-graph-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .legend-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            background: rgba(15, 23, 42, 0.56);
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+        }
+
+        .legend-dot.fraud {
+            background: #fb7185;
+        }
+
+        .legend-dot.safe {
+            background: #4ade80;
+        }
+
+        .legend-dot.confidence {
+            background: #38bdf8;
+        }
+
+        .detail-graph-shell {
+            padding: 18px;
+            border-radius: 22px;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            background: rgba(7, 17, 32, 0.72);
+        }
+
+        .detail-graph-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .detail-graph-meta strong {
+            font-size: 14px;
+        }
+
+        .detail-graph-meta span {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .detail-chart {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .detail-chart-grid line {
+            stroke: rgba(148, 163, 184, 0.12);
+            stroke-width: 1;
+        }
+
+        .detail-chart-axis text {
+            fill: #64748b;
+            font-size: 11px;
+        }
+
+        .detail-chart-labels text {
+            fill: #94a3b8;
+            font-size: 11px;
+        }
+
+        .detail-chart-bars rect {
+            rx: 10;
+            ry: 10;
+        }
+
+        .detail-chart-line {
+            fill: none;
+            stroke: #38bdf8;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .detail-chart-point {
+            fill: #38bdf8;
+            stroke: rgba(7, 17, 32, 0.96);
+            stroke-width: 2;
+        }
+
+        .risk-dashboard {
+            margin-top: 18px;
+        }
+
+        .risk-header {
+            margin-bottom: 16px;
+        }
+
+        .risk-header strong {
+            display: block;
+            font-size: 1.4rem;
+            margin-bottom: 4px;
+        }
+
+        .risk-header p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .risk-grid {
+            display: grid;
+            grid-template-columns: 300px minmax(0, 1fr);
+            gap: 16px;
+        }
+
+        .risk-overall-card {
+            padding: 20px;
+            border-radius: 24px;
+            border: 1px solid rgba(139, 92, 246, 0.26);
+            background: linear-gradient(160deg, rgba(43, 20, 80, 0.95), rgba(15, 23, 42, 0.96));
+        }
+
+        .risk-overall-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .risk-overall-head strong {
+            font-size: 1rem;
+        }
+
+        .risk-grade {
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            background: rgba(251, 113, 133, 0.2);
+            color: #fecdd3;
+        }
+
+        .risk-ring {
+            width: 134px;
+            height: 134px;
+            margin: 0 auto;
+            border-radius: 999px;
+            display: grid;
+            place-items: center;
+            background: conic-gradient(#8b5cf6 0deg, rgba(100, 116, 139, 0.28) 0deg);
+        }
+
+        .risk-ring::before {
+            content: "";
+            width: 102px;
+            height: 102px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(148, 163, 184, 0.16);
+            grid-area: 1 / 1;
+        }
+
+        .risk-ring span {
+            grid-area: 1 / 1;
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+        }
+
+        .risk-overall-card p {
+            margin: 14px 0 0;
+            color: var(--muted);
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .risk-trend-card {
+            padding: 18px;
+            border-radius: 24px;
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            background: rgba(7, 17, 32, 0.72);
+        }
+
+        .risk-categories {
+            margin-top: 16px;
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .risk-category {
+            padding: 12px 10px;
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            background: rgba(15, 23, 42, 0.62);
+            text-align: center;
+        }
+
+        .risk-category .mini-ring {
+            width: 76px;
+            height: 76px;
+            margin: 0 auto 8px;
+            border-radius: 999px;
+            display: grid;
+            place-items: center;
+            background: conic-gradient(#22c55e 0deg, rgba(100, 116, 139, 0.28) 0deg);
+        }
+
+        .risk-category .mini-ring::before {
+            content: "";
+            width: 56px;
+            height: 56px;
+            border-radius: 999px;
+            background: rgba(7, 17, 32, 0.95);
+            border: 1px solid rgba(148, 163, 184, 0.14);
+            grid-area: 1 / 1;
+        }
+
+        .risk-category .mini-ring span {
+            grid-area: 1 / 1;
+            font-size: 1rem;
+            font-weight: 800;
+        }
+
+        .risk-category strong {
+            display: block;
+            font-size: 11px;
+            color: var(--muted);
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+
+        .risk-category p {
+            margin: 4px 0 0;
+            font-size: 11px;
+            color: #bae6fd;
+        }
+
+        @media (max-width: 920px) {
+            body {
+                padding-left: 16px;
+            }
+
+            .shell {
+                display: block;
+            }
+
+            .hero,
+            .panel {
+                padding: 28px;
+            }
+
+            .sidebar {
+                position: static;
+                width: 100%;
+                margin-bottom: 20px;
+                min-height: auto;
+                transform: none;
+            }
+
+            .sidebar::before {
+                display: none;
+            }
+
+            .risk-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .risk-categories {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 16px;
+            }
+
+            .hero,
+            .panel {
+                padding: 22px;
+                border-radius: 22px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .monitor-head,
+            .detail-graph-head,
+            .detail-graph-meta {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav-link {
+                padding: 14px;
+            }
+
+            .risk-categories {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
-
 <body>
+    <div class="page-stack">
+    <main class="shell">
+        <aside class="panel sidebar">
+            <div class="sidebar-header">
+                <div class="console-badge">System Ready</div>
+                <div>
+                    <h2>Detection Console</h2>
+                    <p>Pick a workflow from the sidebar to launch live analysis, inspect evidence, or validate suspicious activity.</p>
+                </div>
+            </div>
 
-<div class="card">
-    <div class="icon">🛡️</div>
-    <h2>VOICE GARD</h2>
-    
+            <div class="sidebar-group">
+                <div class="sidebar-group-title">
+                    <strong>Analysis Options</strong>
+                    <span>Quick launch</span>
+                </div>
+                <nav class="sidebar-nav" aria-label="Home page analysis options">
+                    <button class="nav-link nav-link-button active" id="home-dashboard-link" type="button">
+                        <div class="nav-link-main">
+                            <span class="icon">H</span>
+                            <div class="nav-link-copy">
+                                <strong>Home Dashboard</strong>
+                            </div>
+                        </div>
+                        <span class="tag fast">Home</span>
+                    </button>
 
-    <button class="btn audio" onclick="location.href='/audio'">
-         Live Audio 
-    </button>
+                    <button class="nav-link nav-link-button" id="risk-score-link" type="button">
+                        <div class="nav-link-main">
+                            <span class="icon">R</span>
+                            <div class="nav-link-copy">
+                                <strong>Risk Score</strong>
+                            </div>
+                        </div>
+                        <span class="tag alert">Score</span>
+                    </button>
 
-    <button class="btn text" onclick="location.href='/text'">
-         Text  
-    </button>
+                    <a class="nav-link" href="/audio">
+                        <div class="nav-link-main">
+                            <span class="icon">A</span>
+                            <div class="nav-link-copy">
+                                <strong>Live Audio Analysis</strong>
+                                
+                            </div>
+                        </div>
+                        <span class="tag live">Live</span>
+                    </a>
 
-    <button class="btn text" onclick="location.href='/logs'">
-     📜 Fraud Log
+                    <a class="nav-link" href="/audio_upload">
+                        <div class="nav-link-main">
+                            <span class="icon">U</span>
+                            <div class="nav-link-copy">
+                                <strong>Audio Upload Analysis</strong>
+                                
+                            </div>
+                        </div>
+                        <span class="tag fast">File</span>
+                    </a>
 
-     <button class="btn text" onclick="location.href='/number'">
-    📞 Phone Number Check
-    
-</button>
+                    <a class="nav-link" href="/text">
+                        <div class="nav-link-main">
+                            <span class="icon">T</span>
+                            <div class="nav-link-copy">
+                                <strong>Text Inspection</strong>
+                                
+                            </div>
+                        </div>
+                        <span class="tag fast">Text</span>
+                    </a>
 
+                    <a class="nav-link" href="/number">
+                        <div class="nav-link-main">
+                            <span class="icon">N</span>
+                            <div class="nav-link-copy">
+                                <strong>Phone Number Check</strong>
+                                
+                            </div>
+                        </div>
+                        <span class="tag fast">Lookup</span>
+                    </a>
+                </nav>
+            </div>
 
+            <div class="sidebar-group">
+                <div class="sidebar-group-title">
+                    <strong>Suggested Flow</strong>
+                    <span>Operator guide</span>
+                </div>
+                <div class="sidebar-notes">
+                    <div class="sidebar-note">
+                        <strong>Start with live signals</strong>
+                        <span>Use audio analysis first when the call is still active and time matters.</span>
+                    </div>
+                    <div class="sidebar-note">
+                        <strong>Cross-check with evidence</strong>
+                        <span>Use text inspection and logs together when you need a stronger confidence trail.</span>
+                    </div>
+                </div>
+            </div>
 
+            <div class="footer">Fraud response workspace for audio, text, logs, and number screening.</div>
+        </aside>
 
-    <div class="footer">
-         @ AI + NLP + Speech Processing created by ash limited
+        <section class="hero">
+            <div class="topbar">
+                <div class="topbar-spacer" aria-hidden="true"></div>
+                <div class="brand-mark">
+                    <img src="/static/images/logo.png" alt="VISH Guard logo">
+                </div>
+                <a class="topbar-link" href="/logs">Fraud Logs</a>
+            </div>
+            <div class="brand">
+                <div class="brand-copy">
+                    <strong>VISH Guard</strong>
+                    <span>Voice intelligence secured by protection logic</span>
+                </div>
+            </div>
+            <div class="eyebrow">Secure Call Intelligence</div>
+            <div id="home-view">
+                <section class="monitor" aria-label="Recent detection history">
+                    <div class="monitor-head">
+                        <div class="monitor-copy">
+                            <h1>Realtime spam and fraud detection </h1>
+                            <p>Built with ML, NLP, and speech processing for fraud detection workflows</p>
+                        </div>
+                    </div>
+
+                    <div class="history-panel">
+                        <div class="history-head">
+                            <strong>Past Detected Details</strong>
+                            <span id="history-summary">Recent analysis history</span>
+                        </div>
+                        <div id="history-list" class="history-list">
+                            <div class="history-empty">Run audio or text analysis to display recent detections here.</div>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="stats">
+                    <div class="stat">
+                        <strong>Live</strong>
+                        <span>Audio screening for ongoing calls</span>
+                    </div>
+                    <div class="stat">
+                        <strong>Fast</strong>
+                        <span>Minimal single-page UI with no heavy assets</span>
+                    </div>
+                    <div class="stat">
+                        <strong>Clear</strong>
+                        <span>Focused actions for faster operator response</span>
+                    </div>
+                </div>
+            </div>
+
+            <section id="risk-score-view" class="detail-graph-panel risk-dashboard" hidden>
+                <div class="risk-header">
+                    <strong>Your Risk Scores</strong>
+                    <p>See combined risk score, trend, and category breakdown from your recent detections.</p>
+                </div>
+
+                <div class="risk-grid">
+                    <article class="risk-overall-card">
+                        <div class="risk-overall-head">
+                            <strong>Overall Score</strong>
+                            <span id="risk-grade" class="risk-grade">No Data</span>
+                        </div>
+                        <div id="overall-risk-ring" class="risk-ring">
+                            <span id="overall-risk-value">0%</span>
+                        </div>
+                        <p id="overall-risk-caption">Run at least one analysis to compute score.</p>
+                    </article>
+
+                    <article class="risk-trend-card">
+                        <div class="detail-graph-head">
+                            <div>
+                                <strong>Risk Trend</strong>
+                                <p>Track risk progression for fraud and no-fraud detections.</p>
+                            </div>
+                            <div class="detail-graph-legend">
+                                <span class="legend-chip"><span class="legend-dot fraud"></span>Fraud Result</span>
+                                <span class="legend-chip"><span class="legend-dot safe"></span>No Fraud Result</span>
+                                <span class="legend-chip"><span class="legend-dot confidence"></span>Confidence Trend</span>
+                            </div>
+                        </div>
+
+                        <div class="detail-graph-shell">
+                            <div class="detail-graph-meta">
+                                <strong>Recent Detection Detail Graph</strong>
+                                <span id="detail-graph-summary">Waiting for recent analysis data</span>
+                            </div>
+                            <svg class="detail-chart" viewBox="0 0 1080 320" role="img" aria-label="Recent fraud and no-fraud detection graph">
+                                <defs>
+                                    <linearGradient id="detailFraudGradient" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="#fb7185"></stop>
+                                        <stop offset="100%" stop-color="#ef4444"></stop>
+                                    </linearGradient>
+                                    <linearGradient id="detailSafeGradient" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="#4ade80"></stop>
+                                        <stop offset="100%" stop-color="#22c55e"></stop>
+                                    </linearGradient>
+                                </defs>
+                                <g class="detail-chart-grid">
+                                    <line x1="60" y1="40" x2="1040" y2="40"></line>
+                                    <line x1="60" y1="95" x2="1040" y2="95"></line>
+                                    <line x1="60" y1="150" x2="1040" y2="150"></line>
+                                    <line x1="60" y1="205" x2="1040" y2="205"></line>
+                                    <line x1="60" y1="260" x2="1040" y2="260"></line>
+                                </g>
+                                <g class="detail-chart-axis">
+                                    <text x="22" y="44">100</text>
+                                    <text x="30" y="99">75</text>
+                                    <text x="30" y="154">50</text>
+                                    <text x="30" y="209">25</text>
+                                    <text x="38" y="264">0</text>
+                                </g>
+                                <g id="detail-chart-bars" class="detail-chart-bars"></g>
+                                <path id="detail-chart-line" class="detail-chart-line"></path>
+                                <g id="detail-chart-points"></g>
+                                <g id="detail-chart-labels" class="detail-chart-labels"></g>
+                            </svg>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="risk-categories">
+                    <article class="risk-category">
+                        <div id="cat-audio-ring" class="mini-ring"><span id="cat-audio-value">0%</span></div>
+                        <strong>Live Audio</strong>
+                        <p id="cat-audio-label">No data</p>
+                    </article>
+                    <article class="risk-category">
+                        <div id="cat-text-ring" class="mini-ring"><span id="cat-text-value">0%</span></div>
+                        <strong>Text Analysis</strong>
+                        <p id="cat-text-label">No data</p>
+                    </article>
+                    <article class="risk-category">
+                        <div id="cat-upload-ring" class="mini-ring"><span id="cat-upload-value">0%</span></div>
+                        <strong>Audio Upload</strong>
+                        <p id="cat-upload-label">No data</p>
+                    </article>
+                    <article class="risk-category">
+                        <div id="cat-fraud-rate-ring" class="mini-ring"><span id="cat-fraud-rate-value">0%</span></div>
+                        <strong>Fraud Rate</strong>
+                        <p id="cat-fraud-rate-label">No data</p>
+                    </article>
+                    <article class="risk-category">
+                        <div id="cat-stability-ring" class="mini-ring"><span id="cat-stability-value">0%</span></div>
+                        <strong>Stability</strong>
+                        <p id="cat-stability-label">No data</p>
+                    </article>
+                </div>
+            </section>
+        </section>
+    </main>
     </div>
-</div>
+    <script>
+        (function () {
+            const historySummary = document.getElementById("history-summary");
+            const historyList = document.getElementById("history-list");
+            const homeView = document.getElementById("home-view");
+            const riskScoreView = document.getElementById("risk-score-view");
+            const homeDashboardLink = document.getElementById("home-dashboard-link");
+            const riskScoreLink = document.getElementById("risk-score-link");
+            const detailGraphSummary = document.getElementById("detail-graph-summary");
+            const detailChartBars = document.getElementById("detail-chart-bars");
+            const detailChartLine = document.getElementById("detail-chart-line");
+            const detailChartPoints = document.getElementById("detail-chart-points");
+            const detailChartLabels = document.getElementById("detail-chart-labels");
+            const overallRiskRing = document.getElementById("overall-risk-ring");
+            const overallRiskValue = document.getElementById("overall-risk-value");
+            const overallRiskCaption = document.getElementById("overall-risk-caption");
+            const riskGrade = document.getElementById("risk-grade");
+            let dashboardRequestInFlight = false;
+            let lastDashboardSignature = "";
 
+            const categoryRefs = {
+                audio: { ring: document.getElementById("cat-audio-ring"), value: document.getElementById("cat-audio-value"), label: document.getElementById("cat-audio-label") },
+                text: { ring: document.getElementById("cat-text-ring"), value: document.getElementById("cat-text-value"), label: document.getElementById("cat-text-label") },
+                upload: { ring: document.getElementById("cat-upload-ring"), value: document.getElementById("cat-upload-value"), label: document.getElementById("cat-upload-label") },
+                fraudRate: { ring: document.getElementById("cat-fraud-rate-ring"), value: document.getElementById("cat-fraud-rate-value"), label: document.getElementById("cat-fraud-rate-label") },
+                stability: { ring: document.getElementById("cat-stability-ring"), value: document.getElementById("cat-stability-value"), label: document.getElementById("cat-stability-label") },
+            };
+
+            function clamp(value, min, max) {
+                return Math.max(min, Math.min(max, value));
+            }
+
+            function average(values) {
+                return values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : 0;
+            }
+
+            function stdDev(values) {
+                if (!values.length) {
+                    return 0;
+                }
+                const mean = average(values);
+                const variance = average(values.map((value) => (value - mean) ** 2));
+                return Math.sqrt(variance);
+            }
+
+            function scoreColor(score) {
+                if (score >= 70) {
+                    return "#ef4444";
+                }
+                if (score >= 40) {
+                    return "#f59e0b";
+                }
+                return "#22c55e";
+            }
+
+            function scoreLabel(score) {
+                if (score >= 70) {
+                    return "High";
+                }
+                if (score >= 40) {
+                    return "Moderate";
+                }
+                return "Low";
+            }
+
+            function setRing(ringElement, valueElement, value) {
+                const safeValue = clamp(Math.round(value), 0, 100);
+                ringElement.style.background = "conic-gradient(" + scoreColor(safeValue) + " " + (safeValue * 3.6) + "deg, rgba(100, 116, 139, 0.28) 0deg)";
+                valueElement.textContent = safeValue + "%";
+            }
+
+            function setCategoryScore(ref, value) {
+                setRing(ref.ring, ref.value, value);
+                ref.label.textContent = scoreLabel(value) + " risk";
+            }
+
+            function setNoDataCategory(ref) {
+                setRing(ref.ring, ref.value, 0);
+                ref.label.textContent = "No data";
+            }
+
+            function detectionRisk(item) {
+                const confidence = clamp(Math.round(Number(item.confidence) || 0), 0, 100);
+                return Number(item.decision) === 0 ? confidence : (100 - confidence);
+            }
+
+            function setActiveView(showRisk) {
+                riskScoreView.hidden = !showRisk;
+                homeView.hidden = showRisk;
+                homeDashboardLink.classList.toggle("active", !showRisk);
+                riskScoreLink.classList.toggle("active", showRisk);
+            }
+
+            function escapeHtml(text) {
+                return String(text || "").replace(/[&<>"']/g, (char) => ({
+                    "&": "&amp;",
+                    "<": "&lt;",
+                    ">": "&gt;",
+                    '"': "&quot;",
+                    "'": "&#39;",
+                }[char]));
+            }
+
+            function truncate(text, maxLength) {
+                if (!text) {
+                    return "No transcript preview available.";
+                }
+                return text.length > maxLength ? text.slice(0, maxLength).trim() + "..." : text;
+            }
+
+            function formatSource(source) {
+                if (!source) {
+                    return "Analysis";
+                }
+                return source.charAt(0).toUpperCase() + source.slice(1);
+            }
+
+            function buildDetailLine(points) {
+                if (!points.length) {
+                    return "";
+                }
+
+                return points.map((point, index) => {
+                    const x = points.length === 1 ? 550 : 110 + (930 / (points.length - 1)) * index;
+                    const y = 260 - (point / 100) * 220;
+                    return (index === 0 ? "M" : "L") + x.toFixed(2) + " " + y.toFixed(2);
+                }).join(" ");
+            }
+
+            function renderDetailGraph(items) {
+                const recentItems = items.slice(-6);
+                detailChartBars.innerHTML = "";
+                detailChartPoints.innerHTML = "";
+                detailChartLabels.innerHTML = "";
+
+                if (!recentItems.length) {
+                    detailChartLine.setAttribute("d", "");
+                    detailGraphSummary.textContent = "Waiting for recent analysis data";
+                    return;
+                }
+
+                const confidences = recentItems.map((item) => clamp(Math.round(Number(item.confidence) || 0), 0, 100));
+                detailChartLine.setAttribute("d", buildDetailLine(confidences));
+                detailGraphSummary.textContent = recentItems.length + " recent detections shown";
+
+                const barSlot = recentItems.length === 1 ? 930 : 930 / recentItems.length;
+                const barWidth = Math.min(84, Math.max(52, barSlot * 0.52));
+
+                recentItems.forEach((item, index) => {
+                    const confidence = confidences[index];
+                    const x = recentItems.length === 1 ? 550 - (barWidth / 2) : 110 + (barSlot * index) + ((barSlot - barWidth) / 2);
+                    const y = 260 - (confidence / 100) * 220;
+                    const height = 260 - y;
+                    const fill = Number(item.decision) === 0 ? "url(#detailFraudGradient)" : "url(#detailSafeGradient)";
+
+                    const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                    rect.setAttribute("x", x.toFixed(2));
+                    rect.setAttribute("y", y.toFixed(2));
+                    rect.setAttribute("width", barWidth.toFixed(2));
+                    rect.setAttribute("height", height.toFixed(2));
+                    rect.setAttribute("fill", fill);
+                    detailChartBars.appendChild(rect);
+
+                    const point = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                    point.setAttribute("cx", (x + (barWidth / 2)).toFixed(2));
+                    point.setAttribute("cy", y.toFixed(2));
+                    point.setAttribute("r", "5");
+                    point.setAttribute("class", "detail-chart-point");
+                    detailChartPoints.appendChild(point);
+
+                    const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    label.setAttribute("x", (x + (barWidth / 2)).toFixed(2));
+                    label.setAttribute("y", "286");
+                    label.setAttribute("text-anchor", "middle");
+                    label.textContent = formatSource(item.source);
+                    detailChartLabels.appendChild(label);
+                });
+            }
+
+            function renderRiskDashboard(items) {
+                if (!items.length) {
+                    setRing(overallRiskRing, overallRiskValue, 0);
+                    overallRiskCaption.textContent = "Run at least one analysis to compute score.";
+                    riskGrade.textContent = "No Data";
+                    riskGrade.style.background = "rgba(148, 163, 184, 0.2)";
+                    riskGrade.style.color = "#e2e8f0";
+                    setNoDataCategory(categoryRefs.audio);
+                    setNoDataCategory(categoryRefs.text);
+                    setNoDataCategory(categoryRefs.upload);
+                    setNoDataCategory(categoryRefs.fraudRate);
+                    setNoDataCategory(categoryRefs.stability);
+                    renderDetailGraph([]);
+                    return;
+                }
+
+                const recentItems = items.slice(-12);
+                const riskScores = recentItems.map(detectionRisk);
+                const overall = clamp(Math.round(average(riskScores)), 0, 100);
+                const grade = scoreLabel(overall);
+                const gradeColor = scoreColor(overall);
+
+                setRing(overallRiskRing, overallRiskValue, overall);
+                overallRiskCaption.textContent = "Computed from the latest " + recentItems.length + " detections.";
+                riskGrade.textContent = grade + " Risk";
+                riskGrade.style.background = gradeColor + "33";
+                riskGrade.style.color = "#ffffff";
+
+                const bySource = (source) => recentItems.filter((item) => item.source === source).map(detectionRisk);
+                const audioScores = bySource("audio");
+                const textScores = bySource("text");
+                const uploadScores = bySource("upload");
+
+                audioScores.length ? setCategoryScore(categoryRefs.audio, average(audioScores)) : setNoDataCategory(categoryRefs.audio);
+                textScores.length ? setCategoryScore(categoryRefs.text, average(textScores)) : setNoDataCategory(categoryRefs.text);
+                uploadScores.length ? setCategoryScore(categoryRefs.upload, average(uploadScores)) : setNoDataCategory(categoryRefs.upload);
+
+                const fraudRate = clamp(Math.round((recentItems.filter((item) => Number(item.decision) === 0).length / recentItems.length) * 100), 0, 100);
+                setCategoryScore(categoryRefs.fraudRate, fraudRate);
+
+                const confidences = recentItems.map((item) => clamp(Math.round(Number(item.confidence) || 0), 0, 100));
+                const stability = clamp(100 - Math.round(stdDev(confidences) * 2), 0, 100);
+                setRing(categoryRefs.stability.ring, categoryRefs.stability.value, stability);
+                categoryRefs.stability.label.textContent = stability >= 65 ? "Stable" : "Fluctuating";
+
+                renderDetailGraph(recentItems);
+            }
+
+            function renderHistory(items) {
+                if (!items.length) {
+                    historySummary.textContent = "Recent analysis history";
+                    historyList.innerHTML = '<div class="history-empty">Run audio or text analysis to display recent detections here.</div>';
+                    renderRiskDashboard([]);
+                    return;
+                }
+
+                const recentItems = items.slice(-2);
+                historySummary.textContent = recentItems.length + " recent detection" + (recentItems.length === 1 ? "" : "s");
+                renderRiskDashboard(items);
+                historyList.innerHTML = recentItems.slice().reverse().map((item) => {
+                    const confidence = clamp(Math.round(Number(item.confidence) || 0), 0, 100);
+                    const label = Number(item.decision) === 0 ? "Fraud" : "Safe";
+                    const chipClass = Number(item.decision) === 0 ? "fraud" : "safe";
+                    const keywords = Array.isArray(item.keywords) ? item.keywords.slice(0, 4) : [];
+
+                    return `
+                        <article class="history-item">
+                            <div class="history-item-head">
+                                <div>
+                                    <strong>${confidence}% confidence</strong>
+                                    <div class="history-meta">${escapeHtml(formatSource(item.source))} source | ${escapeHtml(item.time || "No timestamp")}</div>
+                                </div>
+                                <span class="history-chip ${chipClass}">${label}</span>
+                            </div>
+                            <div class="history-body">${escapeHtml(truncate(item.text, 120))}</div>
+                            <div class="history-keywords">
+                                ${keywords.length ? keywords.map((keyword) => `<span>${escapeHtml(keyword)}</span>`).join("") : "<span>No keywords</span>"}
+                            </div>
+                        </article>
+                    `;
+                }).join("");
+            }
+
+            async function loadDashboardData() {
+                if (dashboardRequestInFlight) {
+                    return;
+                }
+
+                dashboardRequestInFlight = true;
+                try {
+                    const response = await fetch("/dashboard_data", { cache: "no-store" });
+                    const data = await response.json();
+                    const history = data.history || [];
+                    const signature = JSON.stringify(history);
+
+                    if (signature !== lastDashboardSignature) {
+                        lastDashboardSignature = signature;
+                        renderHistory(history);
+                    }
+                } catch (error) {
+                    historySummary.textContent = "Connection error";
+                    historyList.innerHTML = '<div class="history-empty">Could not load your detection history.</div>';
+                    renderRiskDashboard([]);
+                } finally {
+                    dashboardRequestInFlight = false;
+                }
+            }
+
+            homeDashboardLink.addEventListener("click", function () {
+                setActiveView(false);
+            });
+
+            riskScoreLink.addEventListener("click", function () {
+                setActiveView(true);
+            });
+
+            setActiveView(false);
+            loadDashboardData();
+            setInterval(loadDashboardData, 1200);
+        }());
+    </script>
 </body>
 </html>

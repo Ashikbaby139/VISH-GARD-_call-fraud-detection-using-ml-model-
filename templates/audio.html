@@ -2,274 +2,627 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Live Audio Scam Detection</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VISH Guard | Live Audio Detection</title>
 
 <style>
+:root {
+    --bg: #081120;
+    --bg-soft: rgba(9, 19, 35, 0.82);
+    --panel: rgba(10, 24, 44, 0.78);
+    --panel-strong: rgba(14, 32, 57, 0.96);
+    --line: rgba(148, 163, 184, 0.16);
+    --text: #f8fafc;
+    --muted: #94a3b8;
+    --cyan: #38bdf8;
+    --blue: #2563eb;
+    --green: #22c55e;
+    --red: #fb7185;
+    --orange: #f97316;
+    --shadow: 0 24px 60px rgba(2, 6, 23, 0.45);
+}
+
+* {
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
-    height: 150vh;
-    font-family: "Segoe UI", Tahoma, sans-serif;
-    background: linear-gradient(135deg, #1d2671, #c33764);
+    min-height: 100vh;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text);
+    background:
+        radial-gradient(circle at top left, rgba(56, 189, 248, 0.16), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(34, 197, 94, 0.16), transparent 24%),
+        linear-gradient(145deg, #040b16 0%, #081120 42%, #0e172a 100%);
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 28px 16px;
 }
 
-.card {
-    background: rgb(241, 245, 245);
-    width: 760px;
-    padding: 40px;
+.shell {
+    width: min(1180px, 100%);
+    display: grid;
+    grid-template-columns: 1.18fr 0.82fr;
+    gap: 22px;
+}
+
+.hero,
+.panel {
+    border: 1px solid var(--line);
+    border-radius: 28px;
+    background: var(--bg-soft);
+    backdrop-filter: blur(16px);
+    box-shadow: var(--shadow);
+}
+
+.hero {
+    padding: 32px;
+}
+
+.panel {
+    padding: 24px;
+    background: var(--panel);
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.brand-mark {
+    width: 74px;
+    height: 74px;
+    border-radius: 22px;
+    border: 1px solid rgba(56, 189, 248, 0.24);
+    background:
+        radial-gradient(circle at top, rgba(56, 189, 248, 0.14), transparent 52%),
+        linear-gradient(145deg, rgba(8, 145, 178, 0.16), rgba(34, 197, 94, 0.1));
+    display: grid;
+    place-items: center;
+}
+
+.brand-copy strong {
+    display: block;
+    font-size: 1.4rem;
+}
+
+.brand-copy span {
+    display: block;
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.eyebrow {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(56, 189, 248, 0.22);
+    background: rgba(8, 145, 178, 0.12);
+    color: #bae6fd;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+h1 {
+    margin: 18px 0 10px;
+    font-size: clamp(2rem, 4vw, 3.3rem);
+    line-height: 1.02;
+    letter-spacing: -0.04em;
+}
+
+.lead,
+.panel p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+.header-back {
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    background: rgba(15, 23, 42, 0.58);
+    color: var(--text);
+    padding: 12px 16px;
     border-radius: 16px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+    cursor: pointer;
+    font-weight: 700;
+    white-space: nowrap;
 }
-
-h2 { text-align:center; margin-bottom:5px; }
-p.subtitle { text-align:center; color:#666; margin-bottom:15px; }
 
 .controls {
-    display:flex;
-    justify-content:center;
-    gap:15px;
-    margin:20px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 26px 0 18px;
 }
 
 .btn {
-    padding:4px 20px;
-    font-size:30px;
-    border:none;
-    border-radius:30px;
-    cursor:pointer;
-    color:white;
+    border: 1px solid transparent;
+    border-radius: 16px;
+    padding: 14px 18px;
+    color: var(--text);
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 700;
+    transition: transform 0.18s ease, border-color 0.18s ease;
 }
 
-.start { background:linear-gradient(135deg,#00c6ff,#0072ff); }
-.stop  { background:linear-gradient(135deg,#ff416c,#ff4b2b); }
-.clear { background:linear-gradient(135deg,#7f8c8d,#2c3e50); }
+.btn:hover,
+.header-back:hover {
+    transform: translateY(-2px);
+}
+
+.start {
+    background: linear-gradient(135deg,#090213, #000000);
+}
+
+.stop {
+    background: linear-gradient(135deg, #090213, #000000 );
+}
+
+.clear {
+    background: linear-gradient(135deg,  #090213, #000000 );
+}
+
+
 
 .status {
-    text-align:center;
-    font-weight:600;
-    margin-bottom:10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 18px;
+    background: rgba(15, 23, 42, 0.58);
+    border: 1px solid rgba(148, 163, 184, 0.12);
+    font-weight: 700;
+    margin-bottom: 18px;
 }
 
-/* Waveform */
-.wave-container {
-    background:#111;
-    border-radius:10px;
-    padding:10px;
-    margin-bottom:15px;
-}
-canvas { width:100%; height:80px; }
-
-/* Notepad */
-.notepad {
-    background:#9dc1e4;
-    padding:15px;
-    border-radius:8px;
-    min-height:120px;
-    max-height:200px;
-    overflow-y:auto;
-    font-family:Consolas, monospace;
-    white-space:pre-wrap;
-    line-height:1.6;
-    border:1px solid #0c0101;
+.status::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: var(--cyan);
+    box-shadow: 0 0 0 6px rgba(56, 189, 248, 0.12);
 }
 
-/* Keyword highlight */
-.highlight {
-    color:#d60000;
-    font-weight:bold;
+.wave-card,
+.section-card {
+    padding: 18px;
+    border-radius: 22px;
+    background: rgba(15, 23, 42, 0.58);
+    border: 1px solid rgba(148, 163, 184, 0.12);
 }
 
-/* Confidence bar */
-.progress {
-    background:#e0e0e0;
-    border-radius:10px;
-    overflow:hidden;
-    height:18px;
-}
-.progress-bar {
-    height:100%;
-    width:0%;
-    transition:width 0.4s ease;
+.wave-card {
+    margin-bottom: 18px;
+    padding: 14px 18px;
 }
 
-/* Save badge */
-.saved {
-    text-align:center;
-    color:#c0392b;
-    font-weight:600;
-    margin-top:8px;
-    display:none;
+.section-card h3,
+.panel h2 {
+    margin: 0 0 8px;
+    font-size: 1rem;
 }
 
-.section { margin-top:15px; }
-.label { font-weight:600; margin-bottom:5px; }
+.subtle {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+canvas {
+    width: 100%;
+    height: 86px;
+    display: block;
+    margin-top: 10px;
+    border-radius: 18px;
+    background: linear-gradient(180deg, rgba(2, 6, 23, 0.95), rgba(8, 17, 32, 0.98));
+    border: 1px solid rgba(148, 163, 184, 0.08);
+}
+
+.notepad,
 .box {
-    background:#f4f6f8;
-    padding:12px;
-    border-radius:8px;
+    margin-top: 12px;
+    padding: 14px;
+    border-radius: 16px;
+    background: rgba(7, 17, 32, 0.78);
+    border: 1px solid rgba(148, 163, 184, 0.1);
 }
 
-.back {
-    text-align:center;
-    margin-top:20px;
-    color:#0e0101;
+.notepad {
+    min-height: 210px;
+    max-height: 300px;
+    overflow-y: auto;
+    font-family: Consolas, monospace;
+    white-space: pre-wrap;
+    line-height: 1.7;
 }
-.back a {
-    text-decoration:none;
-    color:#cebcbc;
+
+.box {
+    min-height: 56px;
+}
+
+.progress {
+    margin-top: 12px;
+    background: rgba(148, 163, 184, 0.14);
+    border-radius: 999px;
+    overflow: hidden;
+    height: 10px;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--cyan), var(--green));
+    transition: width 0.4s ease;
+}
+
+.saved {
+    margin-top: 14px;
+    padding: 12px 14px;
+    border-radius: 16px;
+    background: rgba(127, 29, 29, 0.18);
+    border: 1px solid rgba(251, 113, 133, 0.18);
+    color: #fecdd3;
+    display: none;
+}
+
+.highlight {
+    color: #fda4af;
+    font-weight: 700;
+}
+
+.stack {
+    display: grid;
+    gap: 14px;
+}
+
+@media (max-width: 920px) {
+    .shell {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    body {
+        padding: 16px;
+    }
+
+    .hero,
+    .panel {
+        padding: 22px;
+        border-radius: 22px;
+    }
+
+    .topbar,
+    .controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .btn,
+    .header-back {
+        width: 100%;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<div class="card">
-    
-    <p class="subtitle">Real-time detection</p>
+<main class="shell">
+    <section class="hero">
+        <div class="topbar">
+            <div class="brand">
+                <div class="brand-mark" aria-hidden="true">
+                    <svg width="44" height="44" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M36 6L55 13.8V29.2C55 43.12 46.71 55.12 36 60.8C25.29 55.12 17 43.12 17 29.2V13.8L36 6Z" fill="url(#shield-fill)"/>
+                        <path d="M36 14L48 18.95V29.07C48 39.05 42.47 47.77 36 51.71C29.53 47.77 24 39.05 24 29.07V18.95L36 14Z" fill="#081120"/>
+                        <path d="M27.5 31.5C27.5 26.81 31.31 23 36 23C40.69 23 44.5 26.81 44.5 31.5" stroke="url(#brand-wave)" stroke-width="3" stroke-linecap="round"/>
+                        <path d="M30.5 35.5C30.5 32.46 32.96 30 36 30C39.04 30 41.5 32.46 41.5 35.5" stroke="url(#brand-wave)" stroke-width="3" stroke-linecap="round"/>
+                        <path d="M33.2 40.1C33.2 38.56 34.46 37.3 36 37.3C37.54 37.3 38.8 38.56 38.8 40.1" stroke="url(#brand-wave)" stroke-width="3" stroke-linecap="round"/>
+                        <path d="M29 45.2L34.1 50.1L44.2 39.2" stroke="#86EFAC" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        <defs>
+                            <linearGradient id="shield-fill" x1="17" y1="6" x2="58" y2="59" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#38BDF8"/>
+                                <stop offset="1" stop-color="#22C55E"/>
+                            </linearGradient>
+                            <linearGradient id="brand-wave" x1="27.5" y1="23" x2="44.5" y2="40.1" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#7DD3FC"/>
+                                <stop offset="1" stop-color="#A7F3D0"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <div class="brand-copy">
+                    <strong>VISH Guard</strong>
+                    <span>Professional live audio monitoring</span>
+                </div>
+            </div>
 
-    <div class="controls">
-        <button class="btn start" onclick="startListening()">▶ Start</button>
-        <button class="btn stop" onclick="stopListening()">⏹ Stop</button>
-        <button class="btn clear" onclick="clearText()">Clear</button>
-    </div>
-
-    <div class="status" id="status">Idle</div>
-
-    <div class="wave-container">
-        <canvas id="wave"></canvas>
-    </div>
-
-    <div class="section">
-        <div class="label">Live Transcription</div>
-        <div class="notepad" id="text"></div>
-    </div>
-
-    <div class="section">
-        <div class="label">Result</div>
-        <div class="box" id="result">—</div>
-    </div>
-
-    <div class="section">
-        <div class="label">Confidence</div>
-        <div class="progress">
-            <div class="progress-bar" id="confBar"></div>
+            <button class="header-back" onclick="location.href='/'">Back Home</button>
         </div>
-        <div class="box" id="confidence">—</div>
-    </div>
 
-    <div class="saved" id="saved">💾 Transcript saved to file</div>
+        <div class="eyebrow">Realtime Audio Detection</div>
+        
 
-    <div class="section">
-        <div class="label">Detected Keywords</div>
-        <div class="box" id="keywords">None</div>
-    </div>
+        <div class="controls">
+            <button class="btn start" onclick="startListening()">Start listening</button>
+            <button class="btn stop" onclick="stopListening()">Stop listening </button>
+            <button class="btn clear" onclick="clearText()">Clear </button>
+            
+        </div>
 
-    <div class="back">
-        <button class="back" onclick="location.href='/'">
-         back
-    </div>
-</div>
+        <div class="status" id="status">Idle</div>
+
+        <div class="wave-card">
+            <h3>Wave Monitor</h3>
+            <div class="subtle"></div>
+            <canvas id="wave"></canvas>
+        </div>
+
+        <div class="section-card">
+            <h3>Live Transcription</h3>
+            <div class="subtle">Speech is transcribed continuously and fraud keywords are highlighted in place.</div>
+            <div class="notepad" id="text"></div>
+        </div>
+    </section>
+
+    <aside class="panel">
+        <h2>Detection Output</h2>
+        <p>Review the model result, confidence, and evidence collected from the current audio stream.</p>
+
+        <div class="stack">
+            <div class="section-card">
+                <h3>Result</h3>
+                <div class="box" id="result">-</div>
+            </div>
+
+            <div class="section-card">
+                <h3>Confidence</h3>
+                <div class="progress">
+                    <div class="progress-bar" id="confBar"></div>
+                </div>
+                <div class="box" id="confidence">-</div>
+            </div>
+
+            <div class="saved" id="saved">Transcript saved to fraud evidence log.</div>
+
+            <div class="section-card">
+                <h3>Detected Keywords</h3>
+                <div class="box" id="keywords">None</div>
+            </div>
+        </div>
+    </aside>
+</main>
 
 <script>
-let listening=false, interval;
+document.addEventListener("DOMContentLoaded", () => {
+    let listening = false;
+    let interval = null;
+    let audioContext = null;
+    let analyser = null;
+    let mediaStream = null;
+    let sourceNode = null;
+    let waveformData = null;
+    let animationFrame = null;
 
-/* Wave vars */
-let audioCtx, analyser, dataArray, source, stream;
-const canvas=document.getElementById("wave");
-const ctx=canvas.getContext("2d");
-canvas.width=canvas.offsetWidth;
-canvas.height=canvas.offsetHeight;
+    const canvas = document.getElementById("wave");
+    const ctx = canvas.getContext("2d");
 
-/* Highlight keywords */
-function highlightKeywords(text, keywords){
-    let out=text;
-    keywords.forEach(kw=>{
-        out=out.replace(new RegExp(`(${kw})`,"gi"),
-            `<span class="highlight">$1</span>`);
-    });
-    return out;
-}
+    const status = document.getElementById("status");
+    const textBox = document.getElementById("text");
+    const resultBox = document.getElementById("result");
+    const confidenceBox = document.getElementById("confidence");
+    const keywordsBox = document.getElementById("keywords");
+    const confBar = document.getElementById("confBar");
+    const saved = document.getElementById("saved");
 
-/* Start */
-async function startListening(){
-    if(listening) return;
-    listening=true;
-    document.getElementById("status").innerText="Listening…";
-    interval=setInterval(poll,400);
-
-    audioCtx=new (window.AudioContext||window.webkitAudioContext)();
-    stream=await navigator.mediaDevices.getUserMedia({audio:true});
-    source=audioCtx.createMediaStreamSource(stream);
-    analyser=audioCtx.createAnalyser();
-    analyser.fftSize=2048;
-    dataArray=new Uint8Array(analyser.fftSize);
-    source.connect(analyser);
-    drawWave();
-}
-
-/* Stop */
-function stopListening(){
-    listening=false;
-    clearInterval(interval);
-    document.getElementById("status").innerText="Stopped";
-    if(stream) stream.getTracks().forEach(t=>t.stop());
-    if(audioCtx) audioCtx.close();
-    fetch("/reset");
-}
-
-/* Clear */
-function clearText(){
-    fetch("/reset");
-    document.getElementById("text").innerHTML="";
-    document.getElementById("result").innerText="—";
-    document.getElementById("confidence").innerText="—";
-    document.getElementById("keywords").innerText="None";
-    document.getElementById("confBar").style.width="0%";
-    document.getElementById("saved").style.display="none";
-    document.getElementById("status").innerText="Cleared";
-}
-
-/* Wave */
-function drawWave(){
-    if(!listening) return;
-    requestAnimationFrame(drawWave);
-    analyser.getByteTimeDomainData(dataArray);
-    ctx.fillStyle="#111";
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-    ctx.strokeStyle="#00e5ff";
-    ctx.beginPath();
-    let x=0;
-    const slice=canvas.width/dataArray.length;
-    for(let i=0;i<dataArray.length;i++){
-        const y=(dataArray[i]/128)*canvas.height/2;
-        i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
-        x+=slice;
+    function setCanvasSize() {
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
     }
-    ctx.stroke();
-}
 
-/* Poll backend */
-async function poll(){
-    if(!listening) return;
-    const r=await fetch("/listen");
-    const d=await r.json();
+    function drawIdleWave() {
+        setCanvasSize();
 
-    document.getElementById("text").innerHTML=
-        highlightKeywords(d.text||"",d.keywords||[]);
-    document.getElementById("result").innerText=d.result||"Listening…";
-    document.getElementById("confidence").innerText=d.confidence||"—";
-    document.getElementById("keywords").innerText=
-        d.keywords?.length?d.keywords.join(", "):"None";
+        const width = canvas.width;
+        const height = canvas.height;
 
-    const pct=parseFloat(d.confidence)||0;
-    const bar=document.getElementById("confBar");
-    bar.style.width=pct+"%";
-    bar.style.background=pct>=40?"#e74c3c":"#2ecc71";
-    document.getElementById("saved").style.display=
-        pct>=40?"block":"none";
-}
+        ctx.clearRect(0, 0, width, height);
+        ctx.strokeStyle = "#38bdf8";
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+
+        for (let x = 0; x < width; x += 10) {
+            const y = height / 2 + Math.sin(x * 0.04) * 10;
+            if (x === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
+        }
+
+        ctx.stroke();
+    }
+
+    function drawLiveWave() {
+        if (!listening || !analyser || !waveformData) {
+            return;
+        }
+
+        setCanvasSize();
+        const width = canvas.width;
+        const height = canvas.height;
+
+        analyser.getByteTimeDomainData(waveformData);
+
+        ctx.clearRect(0, 0, width, height);
+        ctx.strokeStyle = "#67e8f9";
+        ctx.lineWidth = 1.1;
+        ctx.beginPath();
+
+        const slice = width / waveformData.length;
+        let x = 0;
+
+        for (let i = 0; i < waveformData.length; i++) {
+            const v = waveformData[i] / 128;
+            const y = (v * height) / 2;
+
+            if (i === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
+
+            x += slice;
+        }
+
+        ctx.stroke();
+        animationFrame = requestAnimationFrame(drawLiveWave);
+    }
+
+    async function ensureWaveInput() {
+        if (audioContext && analyser && mediaStream) {
+            if (audioContext.state === "suspended") {
+                await audioContext.resume();
+            }
+            return;
+        }
+
+        mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        sourceNode = audioContext.createMediaStreamSource(mediaStream);
+        analyser = audioContext.createAnalyser();
+        analyser.fftSize = 2048;
+        analyser.smoothingTimeConstant = 0.82;
+        waveformData = new Uint8Array(analyser.fftSize);
+        sourceNode.connect(analyser);
+    }
+
+    function stopWaveInput() {
+        if (animationFrame) {
+            cancelAnimationFrame(animationFrame);
+            animationFrame = null;
+        }
+
+        if (sourceNode) {
+            sourceNode.disconnect();
+            sourceNode = null;
+        }
+
+        if (mediaStream) {
+            mediaStream.getTracks().forEach((track) => track.stop());
+            mediaStream = null;
+        }
+
+        if (audioContext) {
+            audioContext.close();
+            audioContext = null;
+        }
+
+        analyser = null;
+        waveformData = null;
+    }
+
+    function highlightKeywords(text, keywords) {
+        let out = text;
+        keywords.forEach((k) => {
+            const reg = new RegExp(`(${k})`, "gi");
+            out = out.replace(reg, '<span class="highlight">$1</span>');
+        });
+        return out;
+    }
+
+    function updateConfidence(pct) {
+        confBar.style.width = pct + "%";
+        confBar.style.background = pct >= 40
+            ? "linear-gradient(90deg, #ef4444, #fb7185)"
+            : "linear-gradient(90deg, #38bdf8, #22c55e)";
+        saved.style.display = pct >= 40 ? "block" : "none";
+    }
+
+    window.startListening = async () => {
+        if (listening) return;
+
+        try {
+            await ensureWaveInput();
+            listening = true;
+            status.innerText = "Starting audio monitor...";
+            interval = setInterval(poll, 700);
+            poll();
+            drawLiveWave();
+        } catch (err) {
+            status.innerText = "Microphone permission required";
+        }
+    };
+
+    window.stopListening = () => {
+        listening = false;
+        clearInterval(interval);
+        stopWaveInput();
+        status.innerText = "Stopped";
+        fetch("/reset");
+        drawIdleWave();
+    };
+
+    window.clearText = () => {
+        listening = false;
+        clearInterval(interval);
+        stopWaveInput();
+
+        textBox.innerHTML = "";
+        resultBox.innerText = "-";
+        confidenceBox.innerText = "-";
+        keywordsBox.innerText = "None";
+        saved.style.display = "none";
+
+        updateConfidence(0);
+        status.innerText = "Cleared";
+        drawIdleWave();
+    };
+
+    async function poll() {
+        if (!listening) return;
+
+        try {
+            const r = await fetch("/listen");
+            const d = await r.json();
+
+            status.innerText = "Listening...";
+            textBox.innerHTML = highlightKeywords(d.text || "", d.keywords || []);
+            resultBox.innerText = d.result || "Listening...";
+            confidenceBox.innerText = d.confidence || "-";
+            keywordsBox.innerText = d.keywords && d.keywords.length ? d.keywords.join(", ") : "None";
+
+            const pct = parseFloat(d.confidence) || 0;
+            updateConfidence(pct);
+        } catch (err) {
+            status.innerText = "Server unavailable";
+        }
+    }
+
+    window.addEventListener("resize", drawIdleWave);
+    drawIdleWave();
+});
 </script>
 
 </body>

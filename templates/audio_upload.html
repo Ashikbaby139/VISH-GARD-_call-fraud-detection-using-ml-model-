@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VISH Guard | Phone Number Check</title>
+<title>VISH Guard | Audio Upload Analysis</title>
 
 <style>
 :root {
@@ -34,9 +34,9 @@ body {
 }
 
 .shell {
-    width: min(1020px, 100%);
+    width: min(1120px, 100%);
     display: grid;
-    grid-template-columns: 1fr 0.95fr;
+    grid-template-columns: 1.05fr 0.95fr;
     gap: 22px;
 }
 
@@ -67,8 +67,8 @@ body {
 h1 {
     margin: 18px 0 10px;
     font-size: clamp(2rem, 4vw, 3.2rem);
-    letter-spacing: -0.04em;
     line-height: 1.02;
+    letter-spacing: -0.04em;
 }
 
 .lead, .panel p {
@@ -77,7 +77,7 @@ h1 {
     line-height: 1.7;
 }
 
-.checker,
+.uploader,
 .section-card {
     margin-top: 22px;
     padding: 18px;
@@ -86,19 +86,20 @@ h1 {
     border: 1px solid rgba(148, 163, 184, 0.12);
 }
 
-input {
+input[type="file"] {
     width: 100%;
     margin-top: 12px;
-    padding: 16px;
+    padding: 14px;
     border-radius: 18px;
     border: 1px solid rgba(148, 163, 184, 0.16);
     background: rgba(7, 17, 32, 0.78);
     color: var(--text);
-    font-size: 15px;
 }
 
-input::placeholder {
-    color: #64748b;
+.helper {
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 13px;
 }
 
 .actions {
@@ -141,16 +142,8 @@ input::placeholder {
     background: rgba(7, 17, 32, 0.78);
     border: 1px solid rgba(148, 163, 184, 0.1);
     min-height: 56px;
-}
-
-ul {
-    margin: 0;
-    padding-left: 18px;
-    color: var(--text);
-}
-
-li + li {
-    margin-top: 8px;
+    white-space: pre-wrap;
+    line-height: 1.6;
 }
 
 @media (max-width: 920px) {
@@ -165,33 +158,32 @@ li + li {
 }
 </style>
 </head>
-
 <body>
-
 <main class="shell">
     <section class="hero">
-        <div class="eyebrow">Number Reputation Check</div>
-        <h1>Screen suspicious phone numbers before you continue the interaction.</h1>
-        <p class="lead">Use the existing number checker to inspect confidence, overall status, and the reasons behind a flagged number.</p>
+        <div class="eyebrow">Audio File Analysis</div>
+        <h1>Upload an audio file and detect whether the conversation looks fraudulent.</h1>
+        <p class="lead">This page transcribes the uploaded audio and runs the same fraud detection logic already used across your app.</p>
 
-        <div class="checker">
-            <h3>Phone Number Input</h3>
-            <input id="number" placeholder="Enter phone number">
+        <div class="uploader">
+            <h3>Select Audio File</h3>
+            <input id="audioFile" type="file" accept=".wav,.mp3,.mpeg,audio/wav,audio/mpeg,audio/mp3">
+            <div class="helper">Supported: WAV now. MP3 and MPEG work after installing <code>pydub</code> and <code>ffmpeg</code>.</div>
             <div class="actions">
-                <button class="btn primary" onclick="check()">Check Number</button>
+                <button class="btn primary" onclick="analyzeUpload()">Upload And Analyze</button>
                 <button class="btn secondary" onclick="location.href='/'">Back Home</button>
             </div>
         </div>
     </section>
 
     <aside class="panel">
-        <h2>Check Result</h2>
-        <p>Review the calculated status, confidence score, and the reasons returned by the current phone number analysis feature.</p>
+        <h2>Detection Output</h2>
+        <p>Review the extracted transcript, scam result, confidence score, and detected keywords from the uploaded audio.</p>
 
         <div class="stack">
             <div class="section-card">
-                <h3>Status</h3>
-                <div class="box" id="status">-</div>
+                <h3>Result</h3>
+                <div class="box" id="result">-</div>
             </div>
 
             <div class="section-card">
@@ -200,53 +192,53 @@ li + li {
             </div>
 
             <div class="section-card">
-                <h3>Reasons</h3>
-                <div class="box">
-                    <ul id="reasons"></ul>
-                </div>
+                <h3>Detected Keywords</h3>
+                <div class="box" id="keywords">None</div>
+            </div>
+
+            <div class="section-card">
+                <h3>Transcript</h3>
+                <div class="box" id="transcript">-</div>
             </div>
         </div>
     </aside>
 </main>
 
 <script>
-async function check() {
-    const number = document.getElementById("number").value;
+async function analyzeUpload() {
+    const input = document.getElementById("audioFile");
+    const file = input.files[0];
 
-    const res = await fetch("/check_number", {
+    if (!file) {
+        document.getElementById("result").innerText = "Select an audio file first.";
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("audio", file);
+
+    document.getElementById("result").innerText = "Analyzing...";
+    document.getElementById("confidence").innerText = "-";
+    document.getElementById("keywords").innerText = "None";
+    document.getElementById("transcript").innerText = "-";
+
+    const res = await fetch("/analyze_audio_upload", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ number })
+        body: formData
     });
 
     const data = await res.json();
 
-    if (data.error) {
-        document.getElementById("status").innerText = data.error;
-        document.getElementById("confidence").innerText = "-";
-        document.getElementById("reasons").innerHTML = "";
+    if (!res.ok) {
+        document.getElementById("result").innerText = data.error || "Upload failed";
         return;
     }
 
-    document.getElementById("status").innerText = data.status || "-";
-    document.getElementById("confidence").innerText = data.confidence !== undefined ? "Confidence: " + data.confidence + "%" : "-";
-
-    const ul = document.getElementById("reasons");
-    ul.innerHTML = "";
-
-    (data.reasons || []).forEach((r) => {
-        const li = document.createElement("li");
-        li.innerText = r;
-        ul.appendChild(li);
-    });
-
-    if (!data.reasons || !data.reasons.length) {
-        const li = document.createElement("li");
-        li.innerText = "No detailed reasons available.";
-        ul.appendChild(li);
-    }
+    document.getElementById("result").innerText = data.result || "-";
+    document.getElementById("confidence").innerText = data.confidence || "-";
+    document.getElementById("keywords").innerText = data.keywords && data.keywords.length ? data.keywords.join(", ") : "None";
+    document.getElementById("transcript").innerText = data.transcript || "No speech detected";
 }
 </script>
-
 </body>
 </html>
