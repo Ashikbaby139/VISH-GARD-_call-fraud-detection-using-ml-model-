@@ -1,7 +1,7 @@
 # VISH-GARD-_call-fraud-detection-using-ml-model-
 
 
-![System Screenshot](templates/home page.png)
+![System Screenshot](templates/home_page.png)
 
 call fraud detection by ml and  NLP models .this project  can analyze live audio  and text also can detect spam numbers
 
