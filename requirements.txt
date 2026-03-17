@@ -1,0 +1,9 @@
+flask
+vosk
+sounddevice
+numpy
+pyaudio
+scikit-learn
+nltk
+joblib
+
