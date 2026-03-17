@@ -1,4 +1,4 @@
-# VISH-GARD-_call-fraud-detection-using-ml-model-
+# VISH-GUARD-_call-fraud-detection-using-ml-model-
 
 
 ![System Screenshot](templates/home_page.png)
